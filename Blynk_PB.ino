@@ -9,8 +9,6 @@
 char ssid[] = "YourNetworkName";
 char pass[] = "YourPassword";
 
-BlynkTimer timer;
-
 #define LED 23
 #define PB  16
 
@@ -18,22 +16,28 @@ BLYNK_WRITE(V0)
 { int pbBlynk = param.asInt();
   digitalWrite(LED,pbBlynk);
 }
-void getPB()
-{ if(digitalRead(PB)==0)
-    Blynk.virtualWrite(V1,"PB Pressed");
-  if(digitalRead(PB)==1)
-    Blynk.virtualWrite(V1,"PB Idle");
-}
 
 void setup()
 { Serial.begin(9600);
   Blynk.begin(BLYNK_AUTH_TOKEN, ssid, pass);
   pinMode(LED,OUTPUT);
   pinMode(PB,INPUT_PULLUP);
-  timer.setInterval(10L,getPB);
 }
 
+bool PB_old, PB_new;
 void loop()
 { Blynk.run();
-  timer.run();
+  
+  PB_new = digitalRead(PB);
+
+  if(PB_new==0 && PB_old==1)
+    Blynk.virtualWrite(V1,"PB Pressed");
+  if(PB_new==1 && PB_old==0)
+    Blynk.virtualWrite(V1,"PB Idle");
+
+  PB_old = PB_new;  
 }
+
+
+
+
