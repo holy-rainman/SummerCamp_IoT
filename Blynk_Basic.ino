@@ -6,7 +6,6 @@
 #include <WiFiClient.h>
 #include <BlynkSimpleEsp32.h>
 
-
 char ssid[] = "YourNetworkName";
 char pass[] = "YourPassword";
 
