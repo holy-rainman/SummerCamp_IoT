@@ -17,6 +17,10 @@ BLYNK_WRITE(V0)
   digitalWrite(LED,pbBlynk);
 }
 
+BLYNK_CONNECTED()
+{ Blynk.syncVirtual(V0); 
+} // keep LED state in sync after reconnect  
+
 void setup()
 { Serial.begin(9600);
   Blynk.begin(BLYNK_AUTH_TOKEN, ssid, pass);
@@ -24,17 +28,19 @@ void setup()
   pinMode(PB,INPUT_PULLUP);
 }
 
-bool PB_old, PB_new;
+bool PB_old=1, PB_new;
 void loop()
 { Blynk.run();
-  
   PB_new = digitalRead(PB);
 
   if(PB_new==0 && PB_old==1)
-    Blynk.virtualWrite(V1,"PB Pressed");
+  { Blynk.virtualWrite(V1,"PB Pressed");
+    delay(50);
+  }
   if(PB_new==1 && PB_old==0)
-    Blynk.virtualWrite(V1,"PB Idle");
-
+  { Blynk.virtualWrite(V1,"PB Idle");
+    delay(50);
+  }
   PB_old = PB_new;  
 }
 
